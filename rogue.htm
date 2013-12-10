@@ -22,14 +22,13 @@ function run() {
         //var trees = 
         //(c>>9)^7/3)%6==1
         
-        //a[i] = Math.abs(c^7 - 4*c^5 + 13*c^3 + c^2 - 5*c + 11) % 5 == 1 ? '#': '.';
-        
-        
+        a[i] = Math.abs(c^7 - 4*c^5 + 13*c^3 + c^2 - 5*c + 11) % 5 == 1 ? '#': '.';
         a[i] += i % 80==1 ? '\n' : '';
         //b[i] = (c^3 + x^2 - 5*c + 11)
 
     }
     a[40+14*80]='@';
+    //document.getElementById('r').value = a.join("\n");
     document.body.innerHTML = "<pre>"+a.join("");
 }
 run();
