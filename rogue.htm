@@ -1,0 +1,52 @@
+<!-- work in progress, excuse the hacky code/markup -->
+<textarea onkeypress="GetChar(event)" readonly id="r" rows="30" cols="79"></textarea>
+<script>
+var h = '#';
+var n = 30*80;
+var a = new Array(n)//.join('X');
+var x = 0;
+var y = 0;
+
+function pass(v) {
+    //console.log(a[v]);
+    return ".".indexOf(a[v]) !== -1
+}
+function run() {
+    var b = []
+    for(var i=0; i < n; i++) {
+        var c = Math.abs(i+x+y*80);
+        //(c>>9)*5/2)%7==1
+        //a[i] = (c % 20==0 || (c^3)/3%17==0 ) && c % 5==0  && !(c % 82 == 0) ? '#': '.';
+        
+        //var water = 
+        //var trees = 
+        //(c>>9)^7/3)%6==1
+        
+        a[i] = Math.abs(c^7 - 4*c^5 + 13*c^3 + c^2 - 5*c + 11) % 5 == 1 ? '#': '.';
+        b[i] = (c^3 + x^2 - 5*c + 11)
+
+    }
+    a[40+14*80]='@';
+    document.getElementById('r').value = a.join("");
+}
+run();
+function GetChar (event){
+    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+    if (119 == chCode && pass(40+14*80-80)){
+        y--;
+    }
+    if (115 == chCode && pass(40+14*80+80)){
+        y++;
+    }
+    if (97 == chCode && pass(40+14*80-1)){
+        x--;
+    }
+    if (100 == chCode && pass(40+14*80+1)){
+        x++;
+    }
+    run();
+    console.log (x+","+y);
+}
+
+
+</script>
