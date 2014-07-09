@@ -1,0 +1,147 @@
+<!-- work in progress, excuse the hacky code/markup -->
+<body onkeypress="GetChar(event)"></body>
+<script>
+var h = '#';
+var n = 30*80;
+var a = new Array(n);
+var x = 0;
+var y = 0;
+
+var HP = 30;
+var maxHP = 30;
+
+var found = 0;
+
+//found |= (j)%80==40+entities[i] && ~~(j/80)==14+entities[i+1];
+
+var entities = [10,5,
+                20,10,
+                60,20];
+
+function gen(l) {
+    //console.log((x)^2+(y)^2)  (l)%80==10 && 
+    return Math.abs(l^7 - 4*l^5 + 13*l^3 + l^2 - 5*l + 11) % 5 == 1;
+}
+
+function gen2(l) {
+    return Math.abs(l^7 - 4*l^5 + 13*l^3 + l^2 - 5*l + 11) % 5;
+}
+
+function gen1(l) {
+    return Math.abs(l^7 - 4*l^5 + 13*l^3 + l^2 - 5*l + 11) % 5;
+}
+
+function pass(px,py) {
+    //console.log(gen(Math.abs(px+py)));
+    //return !gen(Math.abs(px+py));
+    //return ".".indexOf(a[v]) !== -1
+    //px = (px)%80;
+    //py = ~~(py/80);
+    console.log(Math.abs(gen2(px+py*80))==1 ? '#' : '.', a[0], Math.abs(gen2(px+py*80)));//, Math.abs(gen1(px+py)));
+    return !(Math.abs(gen2(px+py*80)) == 1);
+    
+}
+//Math.abs(c^7 - 4*c^5 + 13*c^3 + c^2 - 5*c + 11) % 5 == 1
+
+function ca(c) {
+    return g9(c) > 3 ? 1 : 0;
+}
+
+function g9(c) {
+    return gen(c-81)+gen(c-80)+gen(c-79)+
+    gen(c-1)+gen(c)+gen(c+1)+
+    gen(c+79)+gen(c+80)+gen(c+81);
+}
+
+function ag9(c,a) {
+    return a[c-81]+a[c-80]+a[c-79]+
+    a[c-1]+a[c]+a[c+1]+
+    a[c+79]+a[c+80]+a[c+81];
+}
+
+function run() {
+    var b = [];
+    var d = [];
+    var f = [];
+    
+    for(var j=0;j<n;j++) {
+        //d[j] = ca(b[j]) ? '#' : '.';
+        //a[j] = d[j];
+        var k = gen(Math.abs(j+x+y*80));//gen(j,x,y);//gen(b[j+81]);
+        //var k = gen(Math.abs((j%80)+x+~~(j/80)+y*80));
+        found =0;
+        //are any entities on the grid?
+         for(var i=0;i<6;i+=2){
+            //Math.abs(x-entities[i]) > Math.abs(y-entities[i+1]) ? (entities[i] > x ? entities[i]-=1 : entities[i]+=1) : (entities[i+1] > y ? entities[i+1]-=1 : entities[i+1]+=1);
+            found |= (j+x)%80==entities[i] && ~~(j/80)+y==entities[i+1];
+         }
+         
+        var terrain = k ? '#' : '.';
+        a[j] = found ? 'E' : terrain;
+        //if (j==0)
+          //a[j] = 'X';
+        a[j] += j % 80==79 ? '\n' : '';
+    }
+    for(var i=0;i<6;i+=2){
+        
+        //k ? k=i : k=i+1;
+            //entities[i] = (x + entities[i])
+        var e1 = entities[i];
+        var e2 = entities[i+1];
+        
+        var ediffx = e1-(x+40);
+        var ediffy = e2-(y+14);
+        
+        if (Math.abs(ediffx)>Math.abs(ediffy)) {
+            if(ediffx < 0 ) {
+                entities[i] +=1;
+            }
+            else {
+                entities[i] -=1;
+            }
+       }
+       else {     
+            if(ediffy < 0 ) {
+                entities[i+1] +=1;
+            }
+            else {
+                entities[i+1] -=1;
+            }
+        }
+        //move to player short
+        //Math.abs(x+40-entities[i]) > Math.abs(y+14-entities[i+1]) ? (entities[i] > x+40 ? entities[i]-=1 : entities[i]+=1) : (entities[i+1] > y+14 ? entities[i+1]-=1 : entities[i+1]+=1);
+        //entities[i] = enti ?
+        
+        //entities[i] = gen(Math.abs(entities[i]+e2*80)) ? e1 : entities[i];
+        //entities[i+1] = gen(Math.abs(e1+entities[i+1]*80)) ? e2 : entities[i];
+        
+        //var foo = entities[i] < -40 && entities[i] < 80 && entities[i+1] < -30 && entities[i+1] < 30;
+        //a[entities[i]+(entities[i+1])*80] = 'G'//foo ? 'G' : a[40+entities[i]+(14+entities[i+1])*80];
+    }
+    a[40+14*80]='@';
+    a[2400] = HP+'/'+maxHP;
+    //document.getElementById('r').value = a.join("\n");
+    document.body.innerHTML = "<pre>"+a.join("");
+}
+run();
+console.log(entities);
+function GetChar (event){
+    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+    
+    if (119 == chCode && pass(x+40,y+13)){
+        y--;
+    }
+    if (115 == chCode && pass(x+40,y+15)){
+        y++;
+    }
+    if (97 == chCode && pass(x+39,y+14)){
+        x--;
+    }
+    if (100 == chCode && pass(x+41,y+14)){
+        x++;
+    }
+    run();
+    console.log ('@:',x+","+y);
+}
+
+</script>
