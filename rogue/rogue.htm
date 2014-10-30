@@ -109,16 +109,16 @@ run();
 function GetChar (event){
     var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
     pass(x+40,y+14,'c');
-    if (119 == chCode){ //&& pass(x+40,y+13)){
+    if (119 == chCode && pass(x+40,y+13)){
         y--;
     }
-    if (115 == chCode){ //&& pass(x+40,y+15)){
+    if (115 == chCode && pass(x+40,y+15)){
         y++;
     }
-    if (97 == chCode){ //&& pass(x+39,y+14)){
+    if (97 == chCode && pass(x+39,y+14)){
         x--;
     }
-    if (100 == chCode){ //&& pass(x+41,y+14)){
+    if (100 == chCode && pass(x+41,y+14)){
         x++;
     }
     run();
