@@ -16,28 +16,24 @@ var maxHP = 30;
 
 var found = 0;
 
-//found |= (j)%80==40+entities[i] && ~~(j/80)==14+entities[i+1];
-
 var entities = [];//10,5,
 //                20,10,
 //                60,20];
 
-var caves = [];//[-30, -9, 1, 9, 9,
-            // -40, -9, 3, 1, 9];
+var caves = [];
 var seed = 1;
 function noise() {
     return seed = Math.abs(seed * 16807|0);
 }
 
-function genCaves(x,y) {
-    var cx = 0, cy = 0, d = [], delta =0;
-    seed = 123;
-    for (var c = 0; c < 5*5*5*5; c+=5) {
-        var rad = 3+noise()%6;
+function genCave(x,y) {
+    var cx = 0, cy = 0, d = [], delta =0, ff=0;
+    ff= seed = 1+Math.abs(x+y);
+    for (var c = 0; c < 300+ff; c+=3) {
+        var rad = 2+noise()%8;
         d[c] = 40 + x + cx;
         d[c+1] = 14 + y +cy;
-        d[c+2] = d[c+3] = 1;
-        d[c+4] = rad;
+        d[c+2] = rad;
         delta = noise()%5 > 2 ? rad : rad*-1
         delta /= 2;
         noise()%5 > 2 ? cy+=delta : cx+=delta;
@@ -45,8 +41,7 @@ function genCaves(x,y) {
     caves = d;
 }
 
-genCaves(0,0);
-//
+genCave(0,0);
 
 function magic(x) {
     
@@ -61,14 +56,14 @@ function pass(x,y,c) {
     return !ca(x,y);
 }
 
-function elipse(x, y,x2, y2, cx, cy, r) {
-    return cx*(x-x2)*(x-x2) + cy*(y-y2)*(y-y2) < r*r;
+function elipse(x, y,x2, y2, r) {
+    return (x-x2)*(x-x2) + (y-y2)*(y-y2) < r*r;
 }
 
 function ca(x, y) {
     var found = 0;
-    for(var i=0;i<caves.length;i+=5){
-        found |= elipse(x,y,caves[i],caves[i+1],caves[i+2],caves[i+3],caves[i+4]);
+    for(var i=0;i<caves.length;i+=3){
+        found |= elipse(x,y,caves[i],caves[i+1],caves[i+2]);
     }
     
     return found<1;
@@ -127,16 +122,16 @@ function run() {
 run();
 function GetChar (event){
     var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-    if (119 == chCode){// && pass(x+40, y+13)){
+    if (119 == chCode && pass(x+40, y+13)){
         y--;
     }
-    if (115 == chCode){// && pass(x+40, y+15)){
+    if (115 == chCode && pass(x+40, y+15)){
         y++;
     }
-    if (97 == chCode){// && pass(x+39, y+14)){
+    if (97 == chCode && pass(x+39, y+14)){
         x--;
     }
-    if (100 == chCode){// && pass(x+41, y+14)){
+    if (100 == chCode && pass(x+41, y+14)){
         x++;
     }
     run();
